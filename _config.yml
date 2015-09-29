@@ -10,3 +10,11 @@ facebook_username: iFSR.de
 
 # Build settings
 markdown: kramdown
+
+# Collections
+collections:
+  fsr:
+    output: true
+  service:
+    output: true
+  media:
