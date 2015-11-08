@@ -64,8 +64,6 @@ all_posts.each do |post|
         p = Post.new post['title'].gsub('"','\''), post['date'], post['author'], post['content']['html']
         filename = date + '-' + p.slug + '.html'
 
-        puts filename
-
         File.open('../_posts/' + filename, 'w') do |file|
             template = File.read('post_template.html')
             renderer = ERB.new(template)
