@@ -41,22 +41,11 @@ end
 
 
 # Read JSON content
-all_posts = []
-File.open('content.json', 'r').each_line do |post_page|
-    JSON.parse(post_page).each do |post|
-        all_posts << post
-    end
-end
+content = File.open('content.json', 'r').read
+all_posts = JSON.parse(content)
 
 
-# Sort content
-all_posts = all_posts.sort_by do |post|
-    post['date']
-end
-all_posts.reverse!
-
-
-# Template all the things
+# Template all the things \o/
 all_posts.each do |post|
     unless post['title'].strip.empty?
         date = Date.strptime(post['date']).to_s
@@ -64,11 +53,12 @@ all_posts.each do |post|
         p = Post.new post['title'].gsub('"','\''), post['date'], post['author'], post['content']['html']
         filename = date + '-' + p.slug + '.html'
 
+
         File.open('../_posts/' + filename, 'w') do |file|
             template = File.read('post_template.html')
             renderer = ERB.new(template)
             file.write renderer.result(p.get_binding)
-            puts 'Successfully created file ' + filename
+            puts 'Successfully created ' + filename
         end
     end
 end
