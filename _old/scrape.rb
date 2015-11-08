@@ -15,6 +15,13 @@ def parse_page(page)
             text = post.at('.level1').text.strip
             html = post.at('.level1').children.to_s.strip
 
+
+            if post.search('img').count > 0
+                img = "https://www.ifsr.de#{post.at('img')['src']}"
+            else
+                img = nil
+            end
+
             data = {
                 :title => title,
                 :link => link,
@@ -23,7 +30,8 @@ def parse_page(page)
                 :content => {
                     :text => text,
                     :html => html
-                }
+                },
+                :img => img
             }
 
             posts << data
