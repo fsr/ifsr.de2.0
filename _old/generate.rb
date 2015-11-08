@@ -5,8 +5,9 @@ require 'erb'
 require 'date'
 
 class Post
-    def index(title, date, author, content)
+    def initialize(title, date, author, content)
         @title = title
+        @slug = replaceChars title
         @date = date
         @author = author
         @content = content
@@ -14,14 +15,18 @@ class Post
     def get_binding
         binding
     end
+    attr_reader :slug
 end
 
 def replaceChars(s)
     s.gsub(' ', '-')
      .gsub('/', '')
      .gsub('ä', 'ae')
+     .gsub('Ä', 'Ae')
      .gsub('ö', 'oe')
+     .gsub('Ö', 'Oe')
      .gsub('ü', 'ue')
+     .gsub('Ü', 'ue')
      .gsub('ß', 'ss')
      .gsub('.', '')
      .gsub('"', '')
@@ -31,6 +36,7 @@ def replaceChars(s)
      .gsub(':', '')
      .gsub('(', '')
      .gsub(')', '')
+     .gsub('--', '-')
 end
 
 
@@ -49,14 +55,16 @@ all_posts = all_posts.sort_by do |post|
 end
 all_posts.reverse!
 
+
 # Template all the things
 all_posts.each do |post|
     unless post['title'].strip.empty?
         date = Date.strptime(post['date']).to_s
-        filename = date + '-' + replaceChars(post['title']) + '.html'
 
-        p = Post.new
-        p.index post['title'].gsub('"','\''), post['date'], post['author'], post['content']['html']
+        p = Post.new post['title'].gsub('"','\''), post['date'], post['author'], post['content']['html']
+        filename = date + '-' + p.slug + '.html'
+
+        puts filename
 
         File.open('../_posts/' + filename, 'w') do |file|
             template = File.read('post_template.html')
