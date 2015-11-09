@@ -39,11 +39,9 @@ def replaceChars(s)
      .gsub('--', '-')
 end
 
-
 # Read JSON content
 content = File.open('content.json', 'r').read
 all_posts = JSON.parse(content)
-
 
 # Template all the things \o/
 all_posts.each do |post|
@@ -51,8 +49,7 @@ all_posts.each do |post|
         date = Date.strptime(post['date']).to_s
 
         p = Post.new post['title'].gsub('"','\''), post['date'], post['author'], post['content']['html']
-        filename = date + '-' + p.slug + '.html'
-
+        filename = date + '-' + p.slug + '.md'
 
         File.open('../_posts/' + filename, 'w') do |file|
             template = File.read('post_template.html')
